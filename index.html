@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort Hotel Booking | Find Your Perfect Stay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+            margin: 0;
+        }
+        header {
+            box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        nav button {
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        nav button:hover {
+            box-shadow: 0 2px 8px rgba(44,62,80,0.12);
+            opacity: 0.95;
+        }
+        .hotel-card, .activity-card, .restaurant-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.10);
+            padding: 1.7rem 1.2rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .hotel-card:hover, .activity-card:hover, .restaurant-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(44,62,80,0.16);
+        }
+        .book-btn, .activity-btn {
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(39,174,96,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .book-btn:hover, .activity-btn:hover {
+            background: #219150 !important;
+            box-shadow: 0 4px 16px rgba(39,174,96,0.12);
+        }
+        .search-form input, .search-form button {
+            font-size: 1rem;
+        }
+        .search-form input {
+            border-radius: 8px;
+            border: 1px solid #bfc9d1;
+            padding: 0.7rem;
+        }
+        .search-form button {
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        #bookingModal {
+            background: rgba(44,62,80,0.18);
+        }
+        #bookingModal > div {
+            box-shadow: 0 4px 24px rgba(44,62,80,0.18);
+            border-radius: 16px;
+        }
+        #closeModal {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e0eafc;
+        }
+    </style>
+</head>
+<body>
+    
+    <header style="background: #2d3e50; color: #fff; padding: 1.5rem 0; text-align: center;">
+        <div style="position:relative; max-width:1100px; margin:0 auto;">
+            <h1 style="font-size:2.5rem; margin-bottom:0.3rem;">Resort Hotel Booking</h1>
+            <a href="manager_login.html" style="position:absolute; top:0; right:0; background:#27ae60; color:#fff; padding:0.7rem 1.5rem; border-radius:8px; text-decoration:none; font-weight:600; font-size:1rem; box-shadow:0 2px 8px rgba(39,174,96,0.10);">Manager Login</a>
+        </div>
+        <p style="font-size:1.15rem; margin-top:0.5rem;">Find and book your perfect stay at top resorts</p>
+        <nav style="margin-top:1.5rem; display:flex; justify-content:center; gap:1rem;">
+            <button id="navHotels" style="background:#27ae60; color:#fff; border:none; border-radius:8px; padding:0.8rem 2rem; cursor:pointer; font-weight:600; font-size:1.05rem;">Hotels</button>
+            <button id="navActivities" style="background:#2d3e50; color:#fff; border:none; border-radius:8px; padding:0.8rem 2rem; cursor:pointer; font-weight:600; font-size:1.05rem;">Fun Activities</button>
+            <button id="navRestaurants" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.8rem 2rem; cursor:pointer; font-weight:600; font-size:1.05rem;">Restaurants</button>
+        </nav>
+    </header>
+
+    <section style="max-width: 900px; margin: 2rem auto; background: #f8f9fa; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+        <form class="search-form" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(44,62,80,0.07); padding:1.2rem 1rem;">
+            <input type="text" placeholder="Destination or Resort" style="flex: 2;">
+            <input type="date" style="flex: 1;">
+            <input type="date" style="flex: 1;">
+            <input type="number" min="1" placeholder="Guests" style="flex: 1;">
+            <button type="submit" style="background: #2d3e50; color: #fff; border: none;">Search</button>
+        </form>
+            <div id="hotelsSection">
+                <div id="hotels" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+                    <!-- Ten Hotel Cards -->
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Resort 1" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Oceanview Paradise</h2>
+                        <p style="color: #555;">Maldives &bull; 5-star &bull; Beachfront</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$299/night</strong></p>
+                        <button class="book-btn" data-resort="Oceanview Paradise" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Resort 2" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Mountain Escape</h2>
+                        <p style="color: #555;">Swiss Alps &bull; 4-star &bull; Spa & Wellness</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$199/night</strong></p>
+                        <button class="book-btn" data-resort="Mountain Escape" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80" alt="Resort 3" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Desert Luxury</h2>
+                        <p style="color: #555;">Dubai &bull; 5-star &bull; Rooftop Pool</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$249/night</strong></p>
+                        <button class="book-btn" data-resort="Desert Luxury" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Resort 4" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Rainforest Retreat</h2>
+                        <p style="color: #555;">Costa Rica &bull; 4-star &bull; Eco-friendly</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$179/night</strong></p>
+                        <button class="book-btn" data-resort="Rainforest Retreat" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=400&q=80" alt="Resort 5" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">City Lights Hotel</h2>
+                        <p style="color: #555;">New York &bull; 5-star &bull; Central Location</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$329/night</strong></p>
+                        <button class="book-btn" data-resort="City Lights Hotel" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Resort 6" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Safari Adventure</h2>
+                        <p style="color: #555;">Kenya &bull; 4-star &bull; Wildlife</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$259/night</strong></p>
+                        <button class="book-btn" data-resort="Safari Adventure" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Resort 7" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Island Hideaway</h2>
+                        <p style="color: #555;">Bora Bora &bull; 5-star &bull; Overwater Villas</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$399/night</strong></p>
+                        <button class="book-btn" data-resort="Island Hideaway" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Resort 8" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Tropical Bliss</h2>
+                        <p style="color: #555;">Bahamas &bull; 4-star &bull; All-Inclusive</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$219/night</strong></p>
+                        <button class="book-btn" data-resort="Tropical Bliss" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1465101178521-c1a6bca7a581?auto=format&fit=crop&w=400&q=80" alt="Resort 9" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Forest Cabin</h2>
+                        <p style="color: #555;">Canada &bull; 3-star &bull; Nature Retreat</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$139/night</strong></p>
+                        <button class="book-btn" data-resort="Forest Cabin" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                    <div class="hotel-card">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Resort 10" style="width:100%; border-radius: 10px; margin-bottom: 1rem; box-shadow:0 2px 8px rgba(44,62,80,0.10);">
+                        <h2 style="margin: 0 0 0.5rem 0;">Historic Palace</h2>
+                        <p style="color: #555;">India &bull; 5-star &bull; Heritage Stay</p>
+                        <p style="margin: 0.5rem 0 1rem 0;">From <strong>$349/night</strong></p>
+                        <button class="book-btn" data-resort="Historic Palace" style="background: #27ae60; color: #fff;">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            <div id="activitiesSection" style="display:none;">
+                <h2 style="margin-bottom:1.5rem; color:#27ae60;">Fun Activities & Tourist Attractions</h2>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:2rem;">
+                    <div class="activity-card">
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Snorkeling" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Snorkeling Adventure</h3>
+                        <p>Explore vibrant coral reefs and marine life in the Maldives.</p>
+                        <button class="activity-btn" data-activity="Snorkeling Adventure" style="background:#27ae60; color:#fff;">Book Activity</button>
+                    </div>
+                    <div class="activity-card">
+                        <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Skiing" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Skiing in the Alps</h3>
+                        <p>Hit the slopes in the Swiss Alps for an unforgettable winter experience.</p>
+                        <button class="activity-btn" data-activity="Skiing in the Alps" style="background:#27ae60; color:#fff;">Book Activity</button>
+                    </div>
+                    <div class="activity-card">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Safari" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Safari Tour</h3>
+                        <p>See lions, elephants, and more on a guided safari in Kenya.</p>
+                        <button class="activity-btn" data-activity="Safari Tour" style="background:#27ae60; color:#fff;">Book Activity</button>
+                    </div>
+                    <div class="activity-card">
+                        <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Wine Tasting" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Wine Tasting</h3>
+                        <p>Enjoy world-class wines and tours in Tuscany's vineyards.</p>
+                        <button class="activity-btn" data-activity="Wine Tasting" style="background:#27ae60; color:#fff;">Book Activity</button>
+                    </div>
+                    <div class="activity-card">
+                        <img src="https://images.unsplash.com/photo-1465101178521-c1a6bca7a581?auto=format&fit=crop&w=400&q=80" alt="Camel Ride" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Camel Ride in the Desert</h3>
+                        <p>Experience the magic of Morocco with a sunset camel ride.</p>
+                        <button class="activity-btn" data-activity="Camel Ride in the Desert" style="background:#27ae60; color:#fff;">Book Activity</button>
+                    </div>
+                </div>
+            </div>
+            <div id="restaurantsSection" style="display:none;">
+                <h2 style="margin-bottom:1.5rem; color:#e67e22;">Top Restaurants</h2>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:2rem;">
+                    <div class="restaurant-card" data-restaurant="Seafood Grill">
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Seafood Grill" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Seafood Grill</h3>
+                        <p>Fresh catches and ocean views in the Maldives.</p>
+                        <p style="color:#888; font-size:0.95rem;">Oceanview Paradise: 5 min walk (0.3 miles)</p>
+                        <button class="menu-btn" data-menu="Seafood Grill" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.2rem; cursor:pointer; margin-top:1rem; font-weight:600;">View Menu</button>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="Alpine Bistro">
+                        <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Alpine Bistro" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Alpine Bistro</h3>
+                        <p>Swiss specialties and cozy mountain atmosphere.</p>
+                        <p style="color:#888; font-size:0.95rem;">Mountain Escape: 8 min drive (2.1 miles)</p>
+                        <button class="menu-btn" data-menu="Alpine Bistro" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.2rem; cursor:pointer; margin-top:1rem; font-weight:600;">View Menu</button>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="Tuscan Table">
+                        <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Tuscan Table" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Tuscan Table</h3>
+                        <p>Farm-to-table Italian cuisine in the heart of Tuscany.</p>
+                        <p style="color:#888; font-size:0.95rem;">Vineyard Villa: 3 min walk (0.2 miles)</p>
+                        <button class="menu-btn" data-menu="Tuscan Table" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.2rem; cursor:pointer; margin-top:1rem; font-weight:600;">View Menu</button>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="Moroccan Feast">
+                        <img src="https://images.unsplash.com/photo-1465101178521-c1a6bca7a581?auto=format&fit=crop&w=400&q=80" alt="Moroccan Feast" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Moroccan Feast</h3>
+                        <p>Spiced tagines and mint tea in a traditional setting.</p>
+                        <p style="color:#888; font-size:0.95rem;">Desert Oasis: 6 min walk (0.4 miles)</p>
+                        <button class="menu-btn" data-menu="Moroccan Feast" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.2rem; cursor:pointer; margin-top:1rem; font-weight:600;">View Menu</button>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="Tokyo Sushi">
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Tokyo Sushi" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+                        <h3>Tokyo Sushi</h3>
+                        <p>Fresh sushi and sashimi in the heart of Tokyo.</p>
+                        <p style="color:#888; font-size:0.95rem;">Urban Retreat: 10 min walk (0.6 miles)</p>
+                        <button class="menu-btn" data-menu="Tokyo Sushi" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.2rem; cursor:pointer; margin-top:1rem; font-weight:600;">View Menu</button>
+                    </div>
+                </div>
+            </div>
+
+        <div id="hotels" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+            <!-- Resort 1-5 ...existing code... -->
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Resort 1" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Oceanview Paradise</h2>
+                <p style="color: #555;">Maldives &bull; 5-star &bull; Beachfront</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$299/night</strong></p>
+                <button class="book-btn" data-resort="Oceanview Paradise" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Resort 2" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Mountain Escape</h2>
+                <p style="color: #555;">Swiss Alps &bull; 4-star &bull; Spa & Wellness</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$199/night</strong></p>
+                <button class="book-btn" data-resort="Mountain Escape" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80" alt="Resort 3" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Desert Luxury</h2>
+                <p style="color: #555;">Dubai &bull; 5-star &bull; Rooftop Pool</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$249/night</strong></p>
+                <button class="book-btn" data-resort="Desert Luxury" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Resort 4" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Rainforest Retreat</h2>
+                <p style="color: #555;">Costa Rica &bull; 4-star &bull; Eco-friendly</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$179/night</strong></p>
+                <button class="book-btn" data-resort="Rainforest Retreat" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=400&q=80" alt="Resort 5" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">City Lights Hotel</h2>
+                <p style="color: #555;">New York &bull; 5-star &bull; Central Location</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$329/night</strong></p>
+                <button class="book-btn" data-resort="City Lights Hotel" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <!-- Resort 6-15 -->
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Resort 6" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Safari Adventure</h2>
+                <p style="color: #555;">Kenya &bull; 4-star &bull; Wildlife</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$259/night</strong></p>
+                <button class="book-btn" data-resort="Safari Adventure" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Resort 7" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Island Hideaway</h2>
+                <p style="color: #555;">Bora Bora &bull; 5-star &bull; Overwater Villas</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$399/night</strong></p>
+                <button class="book-btn" data-resort="Island Hideaway" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Resort 8" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Tropical Bliss</h2>
+                <p style="color: #555;">Bahamas &bull; 4-star &bull; All-Inclusive</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$219/night</strong></p>
+                <button class="book-btn" data-resort="Tropical Bliss" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1465101178521-c1a6bca7a581?auto=format&fit=crop&w=400&q=80" alt="Resort 9" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Forest Cabin</h2>
+                <p style="color: #555;">Canada &bull; 3-star &bull; Nature Retreat</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$139/night</strong></p>
+                <button class="book-btn" data-resort="Forest Cabin" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Resort 10" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Historic Palace</h2>
+                <p style="color: #555;">India &bull; 5-star &bull; Heritage Stay</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$349/night</strong></p>
+                <button class="book-btn" data-resort="Historic Palace" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Resort 11" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Ski Lodge</h2>
+                <p style="color: #555;">Aspen &bull; 4-star &bull; Winter Sports</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$289/night</strong></p>
+                <button class="book-btn" data-resort="Ski Lodge" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Resort 12" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Vineyard Villa</h2>
+                <p style="color: #555;">Tuscany &bull; 4-star &bull; Wine Tours</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$259/night</strong></p>
+                <button class="book-btn" data-resort="Vineyard Villa" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1465101178521-c1a6bca7a581?auto=format&fit=crop&w=400&q=80" alt="Resort 13" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Desert Oasis</h2>
+                <p style="color: #555;">Morocco &bull; 5-star &bull; Spa Retreat</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$279/night</strong></p>
+                <button class="book-btn" data-resort="Desert Oasis" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80" alt="Resort 14" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Lakeview Resort</h2>
+                <p style="color: #555;">Austria &bull; 4-star &bull; Lakeside</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$199/night</strong></p>
+                <button class="book-btn" data-resort="Lakeview Resort" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 1.5rem;">
+                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" alt="Resort 15" style="width:100%; border-radius: 6px; margin-bottom: 1rem;">
+                <h2 style="margin: 0 0 0.5rem 0;">Urban Retreat</h2>
+                <p style="color: #555;">Tokyo &bull; 5-star &bull; City Center</p>
+                <p style="margin: 0.5rem 0 1rem 0;">From <strong>$359/night</strong></p>
+                <button class="book-btn" data-resort="Urban Retreat" style="background: #27ae60; color: #fff; border: none; border-radius: 5px; padding: 0.6rem 1.2rem; cursor: pointer;">Book Now</button>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align: center; color: #888; padding: 1.5rem 0; font-size: 0.95rem;">
+    &copy; 2025 Resort Hotel Booking. All rights reserved.<br>
+    <span style="font-size:0.9rem;">Designed by Steven | Powered by GitHub Copilot</span>
+    </footer>
+</body>
+
+    <!-- Booking Modal -->
+    <!-- Restaurant Menu Modal -->
+    <div id="menuModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,62,80,0.18); justify-content:center; align-items:center; z-index:1100;">
+        <div style="background:#fff; padding:2.2rem 1.5rem; border-radius:16px; max-width:400px; width:95%; text-align:left; position:relative; box-shadow:0 4px 24px rgba(44,62,80,0.18);">
+            <span id="closeMenuModal" style="position:absolute; top:10px; right:15px; font-size:1.7rem; cursor:pointer; color:#e67e22; font-weight:bold;">&times;</span>
+            <h2 id="menuTitle" style="margin-bottom:1.2rem;">Menu</h2>
+            <form id="foodOrderForm">
+                <div id="menuContent"></div>
+                <div id="orderInputs" style="margin-top:1.2rem;"></div>
+                <div id="orderTotal" style="margin-top:1rem; font-weight:600; color:#27ae60;"></div>
+                <button type="submit" id="orderBtn" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.7rem 1.5rem; cursor:pointer; font-weight:600; width:100%; margin-top:1.2rem;">Place Order & Get Receipt</button>
+            </form>
+            <div id="foodReceipt" style="display:none; margin-top:1.5rem; background:#f8f9fa; border-radius:10px; padding:1.2rem; color:#2d3e50; font-size:1.08rem;"></div>
+        </div>
+    </div>
+    <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000;">
+        <div style="background:#fff; padding:2.2rem 1.5rem; border-radius:16px; max-width:370px; width:95%; text-align:center; position:relative; box-shadow:0 4px 24px rgba(44,62,80,0.18);">
+            <span id="closeModal" style="position:absolute; top:10px; right:15px; font-size:1.7rem; cursor:pointer; color:#e74c3c; font-weight:bold;">&times;</span>
+            <h2 id="modalResortName" style="margin-bottom:1.2rem;">Book Resort</h2>
+            <form>
+                <input id="bookingName" type="text" placeholder="Your Name" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                <input id="bookingEmail" type="email" placeholder="Email" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                <input id="bookingCheckIn" type="date" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                <input id="bookingCheckOut" type="date" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                <input id="bookingPeople" type="number" min="1" placeholder="Number of People" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                <button type="submit" id="confirmBookingBtn" style="background:#27ae60; color:#fff; border:none; border-radius:8px; padding:0.8rem 1.5rem; cursor:pointer; width:100%; font-weight:600; font-size:1.05rem;">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Activity booking modal logic
+        // Create modal HTML
+        if (!document.getElementById('activityBookingModal')) {
+            const modalDiv = document.createElement('div');
+            modalDiv.id = 'activityBookingModal';
+            modalDiv.style = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,62,80,0.18); justify-content:center; align-items:center; z-index:1200;';
+            modalDiv.innerHTML = `
+                <div style="background:#fff; padding:2.2rem 1.5rem; border-radius:16px; max-width:370px; width:95%; text-align:center; position:relative; box-shadow:0 4px 24px rgba(44,62,80,0.18);">
+                    <span id="closeActivityModal" style="position:absolute; top:10px; right:15px; font-size:1.7rem; cursor:pointer; color:#e74c3c; font-weight:bold;">&times;</span>
+                    <h2 id="activityModalTitle" style="margin-bottom:1.2rem;">Book Activity</h2>
+                    <form id="activityBookingForm">
+                        <input id="activityBookingName" type="text" placeholder="Your Name" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                        <input id="activityBookingEmail" type="email" placeholder="Email (optional)" style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                        <input id="activityBookingPhone" type="tel" placeholder="Phone Number" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                        <input id="activityBookingDate" type="date" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                        <input id="activityBookingPeople" type="number" min="1" placeholder="Number of People" required style="width:100%; margin-bottom:1rem; padding:0.8rem; border-radius:8px; border:1px solid #bfc9d1; font-size:1rem;">
+                        <button type="submit" style="background:#27ae60; color:#fff; border:none; border-radius:8px; padding:0.8rem 1.5rem; cursor:pointer; width:100%; font-weight:600; font-size:1.05rem;">Confirm Booking</button>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modalDiv);
+        }
+        // Show modal on activity button click
+        let currentActivity = '';
+        document.querySelectorAll('.activity-btn').forEach(btn => {
+            btn.onclick = function() {
+                currentActivity = btn.getAttribute('data-activity');
+                document.getElementById('activityModalTitle').textContent = 'Book ' + currentActivity;
+                document.getElementById('activityBookingModal').style.display = 'flex';
+            }
+        });
+        // Close modal
+        document.getElementById('closeActivityModal').onclick = function() {
+            document.getElementById('activityBookingModal').style.display = 'none';
+        };
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('activityBookingModal')) {
+                document.getElementById('activityBookingModal').style.display = 'none';
+            }
+        });
+        // Handle booking form submit
+        document.getElementById('activityBookingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('activityBookingName').value;
+            const email = document.getElementById('activityBookingEmail').value;
+            const phone = document.getElementById('activityBookingPhone').value;
+            const date = document.getElementById('activityBookingDate').value;
+            const people = document.getElementById('activityBookingPeople').value;
+            const price = people ? (parseInt(people) * 50) : 50;
+            let activityBookings = [];
+            if (localStorage.getItem('activityBookings')) {
+                activityBookings = JSON.parse(localStorage.getItem('activityBookings'));
+            }
+            activityBookings.push({
+                activity: currentActivity,
+                name,
+                email,
+                phone,
+                people,
+                date,
+                price,
+                status: 'Pending'
+            });
+            localStorage.setItem('activityBookings', JSON.stringify(activityBookings));
+            // Show thank you and receipt
+            const modalContent = document.querySelector('#activityBookingModal > div');
+            modalContent.innerHTML = `
+                <h2 style='color:#27ae60; margin-bottom:1rem;'>Thanks for purchasing!</h2>
+                <div style='font-size:1.15rem; margin-bottom:1.2rem;'>Enjoy your experience!</div>
+                <div style='background:#f8f9fa; border-radius:10px; padding:1.2rem; color:#2d3e50; font-size:1.08rem; margin-bottom:1.2rem;'>
+                    <h3 style='color:#27ae60;'>Activity Receipt</h3>
+                    <div><strong>Name:</strong> ${name}</div>
+                    <div><strong>Phone:</strong> ${phone}</div>
+                    ${email ? `<div><strong>Email:</strong> ${email}</div>` : ''}
+                    <div><strong>Activity:</strong> ${currentActivity}</div>
+                    <div><strong>Date:</strong> ${date}</div>
+                    <div><strong>People:</strong> ${people}</div>
+                    <div style='margin-top:0.7rem; font-weight:600; color:#27ae60;'>Total: $${price}</div>
+                </div>
+                <button id='activityBackBtn' style='background:#2d3e50; color:#fff; border:none; border-radius:8px; padding:0.8rem 1.5rem; cursor:pointer; font-weight:600; font-size:1.05rem; width:100%;'>Back to Front Page</button>
+            `;
+            document.getElementById('activityBookingModal').style.display = 'flex';
+            document.getElementById('activityBackBtn').onclick = function() {
+                document.getElementById('activityBookingModal').style.display = 'none';
+                window.location.href = 'index.html';
+            };
+        };
+
+        // Restaurant menu modal logic
+        const menuModal = document.getElementById('menuModal');
+        const closeMenuModal = document.getElementById('closeMenuModal');
+        const menuTitle = document.getElementById('menuTitle');
+        const menuContent = document.getElementById('menuContent');
+        const menus = {
+            'Seafood Grill': [
+                { name: 'Grilled Lobster', price: '$38' },
+                { name: 'Seared Tuna Steak', price: '$29' },
+                { name: 'Shrimp Cocktail', price: '$18' },
+                { name: 'Fresh Oysters', price: '$22' }
+            ],
+            'Alpine Bistro': [
+                { name: 'Rösti Potatoes', price: '$14' },
+                { name: 'Cheese Fondue', price: '$24' },
+                { name: 'Alpine Lamb Stew', price: '$28' },
+                { name: 'Apple Strudel', price: '$10' }
+            ],
+            'Tuscan Table': [
+                { name: 'Bruschetta', price: '$9' },
+                { name: 'Tuscan Ribeye', price: '$32' },
+                { name: 'Pappardelle al Cinghiale', price: '$21' },
+                { name: 'Tiramisu', price: '$11' }
+            ],
+            'Moroccan Feast': [
+                { name: 'Chicken Tagine', price: '$19' },
+                { name: 'Lamb Couscous', price: '$23' },
+                { name: 'Harira Soup', price: '$12' },
+                { name: 'Mint Tea', price: '$5' }
+            ],
+            'Tokyo Sushi': [
+                { name: 'Salmon Nigiri', price: '$16' },
+                { name: 'Tuna Sashimi', price: '$18' },
+                { name: 'Dragon Roll', price: '$22' },
+                { name: 'Miso Soup', price: '$7' }
+            ]
+        };
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.onclick = function() {
+                const restaurant = btn.getAttribute('data-menu');
+                menuTitle.textContent = restaurant + ' Menu';
+                // Build menu with checkboxes and quantity selectors
+                let html = '';
+                menus[restaurant].forEach((item, idx) => {
+                    html += `<div style='margin-bottom:0.7rem; display:flex; align-items:center; gap:0.5rem;'>
+                        <input type='checkbox' id='menuItem${idx}' name='menuItem' value='${item.name}' data-price='${item.price.replace('$','')}' style='margin-right:0.5rem;'>
+                        <label for='menuItem${idx}' style='flex:1; font-weight:600;'>${item.name}</label>
+                        <span style='color:#27ae60; font-weight:600;'>${item.price}</span>
+                        <input type='number' min='1' value='1' id='qty${idx}' style='width:50px; margin-left:0.5rem;' disabled>
+                    </div>`;
+                });
+                menuContent.innerHTML = html;
+                // Inputs for name and email
+                document.getElementById('orderInputs').innerHTML = `
+                    <input type='text' id='foodName' placeholder='Your Name' required style='width:100%; margin-bottom:0.7rem; padding:0.7rem; border-radius:7px; border:1px solid #ccc;'>
+                    <input type='email' id='foodEmail' placeholder='Email (optional)' style='width:100%; margin-bottom:0.7rem; padding:0.7rem; border-radius:7px; border:1px solid #ccc;'>
+                `;
+                document.getElementById('orderTotal').textContent = '';
+                document.getElementById('foodReceipt').style.display = 'none';
+                menuModal.style.display = 'flex';
+                // Enable quantity only if item checked
+                menus[restaurant].forEach((item, idx) => {
+                    const cb = document.getElementById('menuItem'+idx);
+                    const qty = document.getElementById('qty'+idx);
+                    cb.onchange = function() {
+                        qty.disabled = !cb.checked;
+                        if (!cb.checked) qty.value = 1;
+                        updateOrderTotal();
+                    }
+                    qty.oninput = updateOrderTotal;
+                });
+                function updateOrderTotal() {
+                    let total = 0;
+                    menus[restaurant].forEach((item, idx) => {
+                        const cb = document.getElementById('menuItem'+idx);
+                        const qty = document.getElementById('qty'+idx);
+                        if (cb.checked) {
+                            total += parseInt(item.price.replace('$','')) * parseInt(qty.value);
+                        }
+                    });
+                    document.getElementById('orderTotal').textContent = total > 0 ? 'Total: $'+total : '';
+                }
+            }
+        });
+        closeMenuModal.onclick = function() {
+            menuModal.style.display = 'none';
+        }
+        window.onclick = function(e) {
+            if (e.target === menuModal) {
+                menuModal.style.display = 'none';
+            }
+        }
+
+        // Food order form submit
+        document.getElementById('foodOrderForm').onsubmit = function(e) {
+            e.preventDefault();
+            const restaurant = menuTitle.textContent.replace(' Menu','');
+            const name = document.getElementById('foodName').value;
+            const email = document.getElementById('foodEmail').value;
+            let items = [];
+            let total = 0;
+            menus[restaurant].forEach((item, idx) => {
+                const cb = document.getElementById('menuItem'+idx);
+                const qty = document.getElementById('qty'+idx);
+                if (cb.checked) {
+                    items.push({ menuItem: item.name, price: item.price, quantity: qty.value });
+                    total += parseInt(item.price.replace('$','')) * parseInt(qty.value);
+                }
+            });
+            if (items.length === 0) {
+                alert('Please select at least one menu item.');
+                return;
+            }
+            // Save to localStorage
+            let foodOrders = [];
+            if (localStorage.getItem('foodOrders')) {
+                foodOrders = JSON.parse(localStorage.getItem('foodOrders'));
+            }
+            items.forEach(i => {
+                foodOrders.push({ restaurant, menuItem: i.menuItem, name, email, quantity: i.quantity, price: i.price });
+            });
+            localStorage.setItem('foodOrders', JSON.stringify(foodOrders));
+            // Show receipt and thank you
+            let receiptHtml = `<h2 style='color:#e67e22; margin-bottom:1rem;'>Thank you for your purchase!</h2>`;
+            receiptHtml += `<div style='font-size:1.15rem; margin-bottom:1.2rem;'>Enjoy your meal!</div>`;
+            receiptHtml += `<h3 style='color:#e67e22;'>Receipt</h3>`;
+            receiptHtml += `<div><strong>Name:</strong> ${name}</div>`;
+            if (email) receiptHtml += `<div><strong>Email:</strong> ${email}</div>`;
+            receiptHtml += `<div><strong>Restaurant:</strong> ${restaurant}</div>`;
+            receiptHtml += `<ul style='padding-left:0; list-style:none; margin-top:0.7rem;'>`;
+            items.forEach(i => {
+                receiptHtml += `<li style='margin-bottom:0.5rem;'><span style='font-weight:600;'>${i.menuItem}</span> x${i.quantity} <span style='float:right; color:#27ae60;'>${i.price}</span></li>`;
+            });
+            receiptHtml += `</ul>`;
+            receiptHtml += `<div style='margin-top:0.7rem; font-weight:600; color:#27ae60;'>Total: $${total}</div>`;
+            receiptHtml += `<button id='foodBackBtn' style='background:#2d3e50; color:#fff; border:none; border-radius:8px; padding:0.8rem 1.5rem; cursor:pointer; font-weight:600; font-size:1.05rem; width:100%; margin-top:1.2rem;'>Back to Front Page</button>`;
+            document.getElementById('foodReceipt').innerHTML = receiptHtml;
+            document.getElementById('foodReceipt').style.display = 'block';
+            document.getElementById('foodOrderForm').reset();
+            document.getElementById('orderTotal').textContent = '';
+            document.getElementById('foodBackBtn').onclick = function() {
+                menuModal.style.display = 'none';
+                window.location.href = 'index.html';
+            };
+        }
+        // Modal logic
+        const modal = document.getElementById('bookingModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalResortName = document.getElementById('modalResortName');
+        let currentResort = '';
+        document.querySelectorAll('.book-btn').forEach(btn => {
+            btn.onclick = function() {
+                modal.style.display = 'flex';
+                currentResort = btn.getAttribute('data-resort');
+                modalResortName.textContent = 'Book ' + currentResort;
+            }
+        });
+        closeModal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        window.onclick = function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+            // Navigation logic
+            const hotelsSection = document.getElementById('hotelsSection');
+            const activitiesSection = document.getElementById('activitiesSection');
+            const restaurantsSection = document.getElementById('restaurantsSection');
+            document.getElementById('navHotels').onclick = function() {
+                hotelsSection.style.display = '';
+                activitiesSection.style.display = 'none';
+                restaurantsSection.style.display = 'none';
+            };
+            document.getElementById('navActivities').onclick = function() {
+                hotelsSection.style.display = 'none';
+                activitiesSection.style.display = '';
+                restaurantsSection.style.display = 'none';
+            };
+            document.getElementById('navRestaurants').onclick = function() {
+                hotelsSection.style.display = 'none';
+                activitiesSection.style.display = 'none';
+                restaurantsSection.style.display = '';
+            };
+        // Booking form logic
+        document.querySelector('#bookingModal form').onsubmit = function(e) {
+            e.preventDefault();
+            // Get values
+            const name = document.getElementById('bookingName').value;
+            const email = document.getElementById('bookingEmail').value;
+            const checkIn = document.getElementById('bookingCheckIn').value;
+            const checkOut = document.getElementById('bookingCheckOut').value;
+            const people = document.getElementById('bookingPeople').value;
+            // Save to localStorage (single booking)
+            localStorage.setItem('resortName', currentResort);
+            localStorage.setItem('guestName', name);
+            localStorage.setItem('guestEmail', email);
+            localStorage.setItem('checkIn', checkIn);
+            localStorage.setItem('checkOut', checkOut);
+            localStorage.setItem('bookingPeople', people);
+            // Save to allBookings array
+            let allBookings = [];
+            if (localStorage.getItem('allBookings')) {
+                allBookings = JSON.parse(localStorage.getItem('allBookings'));
+            }
+            allBookings.push({
+                resort: currentResort,
+                name: name,
+                email: email,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                people: people
+            });
+            localStorage.setItem('allBookings', JSON.stringify(allBookings));
+            // Redirect to receipt page
+            window.location.href = 'receipt.html';
+        }
+    </script>
+</html>

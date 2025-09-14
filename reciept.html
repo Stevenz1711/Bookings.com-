@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Receipt</title>
+    <style>
+        body { background: #f8f9fa; font-family: Arial, sans-serif; }
+        .receipt-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 2rem;
+            text-align: center;
+        }
+        h1 { color: #27ae60; }
+        .details { margin: 2rem 0; text-align: left; }
+        .details p { margin: 0.5rem 0; }
+        .back-btn {
+            background: #2d3e50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <h1>Booking Confirmed!</h1>
+        <p>Thank you for booking with Resort Hotel Booking.</p>
+        <div class="details">
+            <p><strong>Resort:</strong> <span id="resortName">-</span></p>
+            <p><strong>Name:</strong> <span id="guestName">-</span></p>
+            <p><strong>Email:</strong> <span id="guestEmail">-</span></p>
+            <p><strong>Check-in:</strong> <span id="checkIn">-</span></p>
+            <p><strong>Check-out:</strong> <span id="checkOut">-</span></p>
+            <p><strong>Number of People:</strong> <span id="bookingPeople">-</span></p>
+            <p><strong>Total Price:</strong> <span id="totalPrice">-</span></p>
+        </div>
+        <button class="back-btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+    <script>
+        // Get booking details from localStorage
+        document.getElementById('resortName').textContent = localStorage.getItem('resortName') || '-';
+        document.getElementById('guestName').textContent = localStorage.getItem('guestName') || '-';
+        document.getElementById('guestEmail').textContent = localStorage.getItem('guestEmail') || '-';
+        document.getElementById('checkIn').textContent = localStorage.getItem('checkIn') || '-';
+        document.getElementById('checkOut').textContent = localStorage.getItem('checkOut') || '-';
+        document.getElementById('bookingPeople').textContent = localStorage.getItem('bookingPeople') || '-';
+
+        // Calculate total price
+        const resortPrices = {
+            'Oceanview Paradise': 299,
+            'Mountain Escape': 199,
+            'Desert Luxury': 249,
+            'Rainforest Retreat': 179,
+            'City Lights Hotel': 329,
+            'Safari Adventure': 259,
+            'Island Hideaway': 399,
+            'Tropical Bliss': 219,
+            'Forest Cabin': 139,
+            'Historic Palace': 349,
+            'Ski Lodge': 289,
+            'Vineyard Villa': 259,
+            'Desert Oasis': 279,
+            'Lakeview Resort': 199,
+            'Urban Retreat': 359
+        };
+        function getNights(checkIn, checkOut) {
+            if (!checkIn || !checkOut) return 1;
+            const inDate = new Date(checkIn);
+            const outDate = new Date(checkOut);
+            const diff = (outDate - inDate) / (1000 * 60 * 60 * 24);
+            return Math.max(1, Math.round(diff));
+        }
+        const resort = localStorage.getItem('resortName');
+        const pricePerNight = resortPrices[resort] || 0;
+        const people = parseInt(localStorage.getItem('bookingPeople')) || 1;
+        const nights = getNights(localStorage.getItem('checkIn'), localStorage.getItem('checkOut'));
+        const total = pricePerNight * people * nights;
+        document.getElementById('totalPrice').textContent = total > 0 ? `$${total}` : '-';
+
+        // Store payment info in allBookings
+        let allBookings = [];
+        if (localStorage.getItem('allBookings')) {
+            allBookings = JSON.parse(localStorage.getItem('allBookings'));
+        }
+        // Only add if not already present (avoid duplicate on reload)
+        const lastBooking = allBookings.length ? allBookings[allBookings.length-1] : null;
+        if (!lastBooking || lastBooking.total !== total || lastBooking.resort !== resort || lastBooking.name !== localStorage.getItem('guestName')) {
+            allBookings.push({
+                resort: resort,
+                name: localStorage.getItem('guestName'),
+                email: localStorage.getItem('guestEmail'),
+                checkIn: localStorage.getItem('checkIn'),
+                checkOut: localStorage.getItem('checkOut'),
+                people: people,
+                total: total
+            });
+            localStorage.setItem('allBookings', JSON.stringify(allBookings));
+        }
+    </script>
+</body>
+</html>

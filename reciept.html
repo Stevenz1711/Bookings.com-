@@ -45,15 +45,21 @@
         <button class="back-btn" onclick="window.location.href='index.html'">Back to Home</button>
     </div>
     <script>
-        // Get booking details from localStorage
-        document.getElementById('resortName').textContent = localStorage.getItem('resortName') || '-';
-        document.getElementById('guestName').textContent = localStorage.getItem('guestName') || '-';
-        document.getElementById('guestEmail').textContent = localStorage.getItem('guestEmail') || '-';
-        document.getElementById('checkIn').textContent = localStorage.getItem('checkIn') || '-';
-        document.getElementById('checkOut').textContent = localStorage.getItem('checkOut') || '-';
-        document.getElementById('bookingPeople').textContent = localStorage.getItem('bookingPeople') || '-';
+        function getQueryParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
 
-        // Calculate total price
+        function getBookingDetail(key) {
+            return localStorage.getItem(key) || getQueryParam(key) || '-';
+        }
+        document.getElementById('resortName').textContent = getBookingDetail('resortName');
+        document.getElementById('guestName').textContent = getBookingDetail('guestName');
+        document.getElementById('guestEmail').textContent = getBookingDetail('guestEmail');
+        document.getElementById('checkIn').textContent = getBookingDetail('checkIn');
+        document.getElementById('checkOut').textContent = getBookingDetail('checkOut');
+        document.getElementById('bookingPeople').textContent = getBookingDetail('bookingPeople');
+
         const resortPrices = {
             'Oceanview Paradise': 299,
             'Mountain Escape': 199,
@@ -72,37 +78,39 @@
             'Urban Retreat': 359
         };
         function getNights(checkIn, checkOut) {
-            if (!checkIn || !checkOut) return 1;
+            if (!checkIn || !checkOut || checkIn === '-' || checkOut === '-') return 1;
             const inDate = new Date(checkIn);
             const outDate = new Date(checkOut);
             const diff = (outDate - inDate) / (1000 * 60 * 60 * 24);
             return Math.max(1, Math.round(diff));
         }
-        const resort = localStorage.getItem('resortName');
+        const resort = getBookingDetail('resortName');
         const pricePerNight = resortPrices[resort] || 0;
-        const people = parseInt(localStorage.getItem('bookingPeople')) || 1;
-        const nights = getNights(localStorage.getItem('checkIn'), localStorage.getItem('checkOut'));
+        const people = parseInt(getBookingDetail('bookingPeople')) || 1;
+        const nights = getNights(getBookingDetail('checkIn'), getBookingDetail('checkOut'));
         const total = pricePerNight * people * nights;
         document.getElementById('totalPrice').textContent = total > 0 ? `$${total}` : '-';
 
-        // Store payment info in allBookings
-        let allBookings = [];
-        if (localStorage.getItem('allBookings')) {
-            allBookings = JSON.parse(localStorage.getItem('allBookings'));
-        }
-        // Only add if not already present (avoid duplicate on reload)
-        const lastBooking = allBookings.length ? allBookings[allBookings.length-1] : null;
-        if (!lastBooking || lastBooking.total !== total || lastBooking.resort !== resort || lastBooking.name !== localStorage.getItem('guestName')) {
-            allBookings.push({
-                resort: resort,
-                name: localStorage.getItem('guestName'),
-                email: localStorage.getItem('guestEmail'),
-                checkIn: localStorage.getItem('checkIn'),
-                checkOut: localStorage.getItem('checkOut'),
-                people: people,
-                total: total
-            });
-            localStorage.setItem('allBookings', JSON.stringify(allBookings));
+        // Store payment info in allBookings (only if localStorage available)
+        if (window.localStorage) {
+            let allBookings = [];
+            if (localStorage.getItem('allBookings')) {
+                allBookings = JSON.parse(localStorage.getItem('allBookings'));
+            }
+            // Only add if not already present (avoid duplicate on reload)
+            const lastBooking = allBookings.length ? allBookings[allBookings.length-1] : null;
+            if (!lastBooking || lastBooking.total !== total || lastBooking.resort !== resort || lastBooking.name !== getBookingDetail('guestName')) {
+                allBookings.push({
+                    resort: resort,
+                    name: getBookingDetail('guestName'),
+                    email: getBookingDetail('guestEmail'),
+                    checkIn: getBookingDetail('checkIn'),
+                    checkOut: getBookingDetail('checkOut'),
+                    people: people,
+                    total: total
+                });
+                localStorage.setItem('allBookings', JSON.stringify(allBookings));
+            }
         }
     </script>
 </body>

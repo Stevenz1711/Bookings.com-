@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <style>
+        body { background: #f8f9fa; font-family: Arial, sans-serif; }
+        .dashboard-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.10);
+            padding: 2.5rem 2rem;
+        }
+        h1 { color: #2d3e50; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        th, td { padding: 0.8rem; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f0f0f0; }
+        .no-bookings { text-align: center; color: #888; margin-top: 2rem; }
+        .logout-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+            <button style="background:#2d3e50; color:#fff; border:none; border-radius:8px; padding:0.7rem 1.5rem; cursor:pointer; font-size:1rem; font-weight:600;" onclick="window.location.href='index.html'">&#8592; Front Page</button>
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <img src="https://img.icons8.com/ios-filled/64/2d3e50/manager.png" alt="Manager Icon" style="margin:0;">
+                <span style="font-size:1.3rem; color:#2d3e50; font-weight:700;">Manager Portal</span>
+            </div>
+            <button class="logout-btn" style="border-radius:8px; font-size:1rem; font-weight:600;" onclick="window.location.href='manager_login.html'">Logout</button>
+        </div>
+        <h1 style="text-align:center; margin-bottom:0.5rem;">Manager Dashboard</h1>
+        <p style="text-align:center; color:#555; margin-bottom:2rem;">View all resort bookings, manage guests, and monitor activity.</p>
+    <p style="text-align:center; color:#555; margin-bottom:2rem; font-size:1.1rem;">View all resort bookings, manage guests, and monitor activity.</p>
+        <div id="summary" style="background:#f0f0f0; border-radius:8px; padding:1rem; margin-bottom:2rem; text-align:center; color:#2d3e50; font-weight:bold; font-size:1.1rem;"></div>
+    <div id="summary" style="background: linear-gradient(90deg, #27ae60 0%, #2d3e50 100%); border-radius:12px; padding:1.5rem 2rem; margin-bottom:2.5rem; text-align:center; color:#fff; font-weight:600; font-size:1.25rem; box-shadow: 0 2px 8px rgba(44,62,80,0.08); letter-spacing: 0.5px;"></div>
+        <table id="bookingsTable" style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+            <thead>
+                <tr style="background:#2d3e50; color:#fff;">
+                    <th>Resort</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>People</th>
+                    <th>Payment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookingsBody">
+            </tbody>
+        </table>
+        <div id="noBookings" class="no-bookings" style="display:none;">No bookings found.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2.5rem;">
+                <h2 style="color:#27ae60; margin:0;">Activity Bookings</h2>
+                <button id="toggleActivities" style="background:#27ae60; color:#fff; border:none; border-radius:8px; padding:0.4rem 1rem; font-weight:600; cursor:pointer;">Minimize</button>
+            </div>
+            <div id="activitiesReceipts"></div>
+            <div id="noActivities" class="no-bookings" style="display:none;">No activity bookings found.</div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2.5rem;">
+                <h2 style="color:#e67e22; margin:0;">Food Orders</h2>
+                <button id="toggleFood" style="background:#e67e22; color:#fff; border:none; border-radius:8px; padding:0.4rem 1rem; font-weight:600; cursor:pointer;">Minimize</button>
+            </div>
+            <div id="foodReceipts"></div>
+            <div id="noFood" class="no-bookings" style="display:none;">No food orders found.</div>
+    </div>
+    <script>
+        // Load activity bookings
+        let activities = [];
+        if (localStorage.getItem('activityBookings')) {
+            activities = JSON.parse(localStorage.getItem('activityBookings'));
+        }
+        // Load food orders
+        let foodOrders = [];
+        if (localStorage.getItem('foodOrders')) {
+            foodOrders = JSON.parse(localStorage.getItem('foodOrders'));
+        }
+        // Load all bookings from localStorage (simulate multiple bookings)
+        let bookings = [];
+        if (localStorage.getItem('allBookings')) {
+            bookings = JSON.parse(localStorage.getItem('allBookings'));
+        } else if (localStorage.getItem('resortName')) {
+            bookings = [{
+                resort: localStorage.getItem('resortName'),
+                name: localStorage.getItem('guestName'),
+                email: localStorage.getItem('guestEmail'),
+                checkIn: localStorage.getItem('checkIn'),
+                checkOut: localStorage.getItem('checkOut')
+            }];
+        }
+        // Summary
+        const summaryDiv = document.getElementById('summary');
+        if (bookings.length > 0) {
+            const resortCounts = {};
+            bookings.forEach(b => {
+                resortCounts[b.resort] = (resortCounts[b.resort] || 0) + 1;
+            });
+            let summaryText = `<span style='font-size:1.5rem;font-weight:700;'>Total Bookings: ${bookings.length}</span>`;
+            summaryText += '<br><span style="font-size:1.1rem; font-weight:600; margin-top:0.5rem; display:inline-block;">Resort Breakdown:</span> ';
+            summaryText += '<ul style="list-style:none; padding:0; margin:0.5rem 0 0 0; display:inline-block; text-align:left;">';
+            Object.entries(resortCounts).forEach(([r, c]) => {
+                summaryText += `<li style='margin-bottom:0.3rem;'><span style='font-weight:600;'>${r}:</span> <span style='color:#ffd700;'>${c}</span></li>`;
+            });
+            summaryText += '</ul>';
+            summaryDiv.innerHTML = summaryText;
+        } else {
+            summaryDiv.innerHTML = '<span style="font-size:1.2rem;">No bookings yet.</span>';
+        }
+        // Table
+        const tbody = document.getElementById('bookingsBody');
+        const noBookings = document.getElementById('noBookings');
+        function renderBookings() {
+            tbody.innerHTML = '';
+            if (bookings.length > 0) {
+                bookings.forEach((b, i) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${b.resort}</td><td>${b.name}</td><td>${b.email}</td><td>${b.checkIn}</td><td>${b.checkOut}</td><td>${b.people || '-'}</td><td>${b.total ? '$'+b.total : '-'}</td><td><button class="confirm-btn" data-index="${i}" style="background:#27ae60; color:#fff; border:none; border-radius:5px; padding:0.3rem 0.8rem; cursor:pointer; margin-right:0.5rem;">${b.confirmed ? 'Confirmed' : 'Confirm'}</button><button class="delete-btn" data-index="${i}" style="background:#e74c3c; color:#fff; border:none; border-radius:5px; padding:0.3rem 0.8rem; cursor:pointer;">Delete</button></td>`;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                noBookings.style.display = 'block';
+            }
+        }
+        renderBookings();
+
+        // Activity Bookings Receipts
+        const activitiesReceipts = document.getElementById('activitiesReceipts');
+        const noActivities = document.getElementById('noActivities');
+        function renderActivitiesReceipts() {
+            activitiesReceipts.innerHTML = '';
+            if (activities.length > 0) {
+                activities.forEach((a, i) => {
+                    const div = document.createElement('div');
+                    div.style = 'background:#f8f9fa; border-radius:10px; box-shadow:0 2px 8px rgba(44,62,80,0.07); padding:1.2rem; color:#2d3e50; font-size:1.08rem; margin-bottom:1.2rem; position:relative;';
+                    div.innerHTML = `
+                        <h3 style='color:#27ae60;'>Activity Receipt</h3>
+                        <div><strong>Name:</strong> ${a.name || '-'}</div>
+                        <div><strong>Phone:</strong> ${a.phone || '-'}</div>
+                        ${a.email ? `<div><strong>Email:</strong> ${a.email}</div>` : ''}
+                        <div><strong>Activity:</strong> ${a.activity}</div>
+                        <div><strong>Date:</strong> ${a.date || '-'}</div>
+                        <div><strong>People:</strong> ${a.people || '-'}</div>
+                        <div style='margin-top:0.7rem; font-weight:600; color:#27ae60;'>Total: $${a.price || '-'}</div>
+                        <div style='margin-top:0.7rem; color:#27ae60; font-weight:bold;'>Status: Paid</div>
+                        <button class='delete-activity-btn' data-index='${i}' style='position:absolute; top:10px; right:10px; background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:0.3rem 0.8rem; font-weight:600; cursor:pointer;'>Delete</button>
+                    `;
+                    activitiesReceipts.appendChild(div);
+                });
+            } else {
+                noActivities.style.display = 'block';
+            }
+        }
+        // Delete activity receipt
+        activitiesReceipts.onclick = function(e) {
+            if (e.target.classList.contains('delete-activity-btn')) {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                if (confirm('Delete this activity receipt?')) {
+                    activities.splice(idx, 1);
+                    localStorage.setItem('activityBookings', JSON.stringify(activities));
+                    renderActivitiesReceipts();
+                }
+            }
+        };
+        renderActivitiesReceipts();
+
+        // Minimize/maximize activities section
+        let activitiesMinimized = false;
+        document.getElementById('toggleActivities').onclick = function() {
+            activitiesMinimized = !activitiesMinimized;
+            activitiesReceipts.style.display = activitiesMinimized ? 'none' : '';
+            this.textContent = activitiesMinimized ? 'Maximize' : 'Minimize';
+        };
+
+        // Food Orders Receipts
+        const foodReceipts = document.getElementById('foodReceipts');
+        const noFood = document.getElementById('noFood');
+        function renderFoodReceipts() {
+            foodReceipts.innerHTML = '';
+            if (foodOrders.length > 0) {
+                foodOrders.forEach((f, i) => {
+                    const div = document.createElement('div');
+                    div.style = 'background:#f8f9fa; border-radius:10px; box-shadow:0 2px 8px rgba(44,62,80,0.07); padding:1.2rem; color:#2d3e50; font-size:1.08rem; margin-bottom:1.2rem; position:relative;';
+                    div.innerHTML = `
+                        <h3 style='color:#e67e22;'>Food Order Receipt</h3>
+                        <div><strong>Name:</strong> ${f.name}</div>
+                        ${f.email ? `<div><strong>Email:</strong> ${f.email}</div>` : ''}
+                        <div><strong>Restaurant:</strong> ${f.restaurant}</div>
+                        <div><strong>Menu Item:</strong> ${f.menuItem}</div>
+                        <div><strong>Quantity:</strong> ${f.quantity || '1'}</div>
+                        <div style='margin-top:0.7rem; font-weight:600; color:#e67e22;'>Price: ${f.price}</div>
+                        <div style='margin-top:0.7rem; color:#e67e22; font-weight:bold;'>Status: Paid</div>
+                        <button class='delete-food-btn' data-index='${i}' style='position:absolute; top:10px; right:10px; background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:0.3rem 0.8rem; font-weight:600; cursor:pointer;'>Delete</button>
+                    `;
+                    foodReceipts.appendChild(div);
+                });
+            } else {
+                noFood.style.display = 'block';
+            }
+        }
+        // Delete food receipt
+        foodReceipts.onclick = function(e) {
+            if (e.target.classList.contains('delete-food-btn')) {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                if (confirm('Delete this food receipt?')) {
+                    foodOrders.splice(idx, 1);
+                    localStorage.setItem('foodOrders', JSON.stringify(foodOrders));
+                    renderFoodReceipts();
+                }
+            }
+        };
+        renderFoodReceipts();
+
+        // Minimize/maximize food section
+        let foodMinimized = false;
+        document.getElementById('toggleFood').onclick = function() {
+            foodMinimized = !foodMinimized;
+            foodReceipts.style.display = foodMinimized ? 'none' : '';
+            this.textContent = foodMinimized ? 'Maximize' : 'Minimize';
+        };
+
+        // Confirm and Delete actions
+        tbody.onclick = function(e) {
+            const idx = e.target.getAttribute('data-index');
+            if (e.target.classList.contains('confirm-btn')) {
+                bookings[idx].confirmed = true;
+                localStorage.setItem('allBookings', JSON.stringify(bookings));
+                renderBookings();
+            }
+            if (e.target.classList.contains('delete-btn')) {
+                if (confirm('Delete this booking?')) {
+                    bookings.splice(idx, 1);
+                    localStorage.setItem('allBookings', JSON.stringify(bookings));
+                    renderBookings();
+                }
+            }
+        };
+    </script>
+</body>
+</html>
